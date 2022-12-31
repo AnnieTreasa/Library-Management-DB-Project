@@ -104,7 +104,7 @@ class App(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (LoginPage, SignupPage):
+        for F in (LoginPage, SignupPage,PageOne):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -149,17 +149,20 @@ class LoginPage(tk.Frame):
             eyebutton.config(command=hide) 
 
         def loginFN(user,pwd):
+            self.user1=user
+            self.pass1=pwd
         
             try:
-                find_user_query="select * from user where user_id=%s and password=%s"
+                find_user_query="select * from user where user_id='"+self.user1+"' and password='"+self.pass1+"'"
                 adr = (user,pwd)
                 db.execute(find_user_query,adr)
                 user  = db.fetchone()
 
                 if user==None:
+                    controller.show_frame(PageOne)
                     return "Invalid Credentials"
                 else:
-                    lambda: controller.show_frame(LoginPage)
+                    controller.show_frame(PageOne)
                     return {"user_id":user[0],"name":user[1],"Phone":user[2],"dept":user[4],"admin_year":user[5]}
                 
             except mysql.connector.Error as err:
@@ -173,7 +176,7 @@ class LoginPage(tk.Frame):
 
         userEntry=Entry(self,width=25,font=('Microsoft Yehei UI Light',11,'bold'),bg='white',bd=0,fg='firebrick2')
         userEntry.place(x=580,y=200)
-        userEntry.insert(0,'Username')
+        userEntry.insert(0,'User Id')
 
         userEntry.bind('<FocusIn>',user_enter)
 
@@ -189,7 +192,7 @@ class LoginPage(tk.Frame):
         eyebutton=Button(self,image=openeye,bd=0,bg='white',activebackground='white',cursor='hand2',command=hide)
         eyebutton.place(x=800,y=290)
 
-        loginButton =Button(self,text='Login',font=('Open Sans',16,'bold'),fg='white',bg='firebrick1',activebackground='firebrick1',activeforeground='white',cursor='hand2',bd=0,width=19,command=loginFN(userEntry.get(),pwdEntry.get()))
+        loginButton =Button(self,text='Login',font=('Open Sans',16,'bold'),fg='white',bg='firebrick1',activebackground='firebrick1',activeforeground='white',cursor='hand2',bd=0,width=19,command= lambda: controller.show_frame(PageOne))
         loginButton.place(x=588,y=380)
 
         signupLabel = Label(self,text="Don't have an account?",font=('Open Sans',10),fg='firebrick1',bg='white')
@@ -232,6 +235,8 @@ class SignupPage(tk.Frame):
                 mydb.commit()
                 messagebox.showinfo('Sucess','Registration is sucessfull')
                 clear()
+                self.destroy()
+                controller.show_frame(LoginPage)
                 return True
 
             except mysql.connector.Error as err:
@@ -320,8 +325,14 @@ class SignupPage(tk.Frame):
 class PageOne(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One")
-        label.pack(pady=10,padx=10)
+        self.controller = controller
+
+        # Load the image file
+        self.image = PhotoImage(file="bgoo.png")
+        
+        # Create a label to display the image
+        self.label = ttk.Label(self, image=self.image)
+        self.label.pack()      
 
         button = tk.Button(self, text="Back to Home",
                             command=lambda: controller.show_frame(LoginPage))
