@@ -248,7 +248,7 @@ class LoginPage(tk.Frame):
                     data={"user_id":user[0],"name":user[1],"Phone":user[2],"dept":user[4],"admin_year":user[5]}
             
                     self.destroy()
-                    self.destroy()
+                
                     home(data)
                 
             except mysql.connector.Error as err:
