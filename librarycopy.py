@@ -16,7 +16,7 @@ mydb = mysql.connector.connect(
 db=mydb.cursor()
 
 
-
+user_id=None
 
 
 def book_listFN():
@@ -88,6 +88,28 @@ def profileFn(user_id):
 #a= profileFn("20br13455")
 #print(a)
 
+def Alert(n):
+    if(n == 0):
+        loginError = Tk()
+        loginError.geometry('260x60')
+        loginError.title('LOGIN ERROR!!!')
+        Label(loginError, text='ERROR\nCan\'t log you in please try again').pack()
+        
+        loginError.mainloop()
+    elif(n == 1):
+        registerError = Tk()
+        registerError.geometry('260x60')
+        registerError.title('REGISTER ERROR!!!')
+        Label(registerError, text='ERROR\nCan\'t register please try again').pack()
+        registerError.mainloop()
+
+    elif(n==2):
+        Error = Tk()
+        Error.geometry('260x60')
+        Error.title('ERROR!!!')
+        Label(Error, text='ERROR\nplease try again').pack()
+        Error.mainloop()
+
 
 
 
@@ -148,6 +170,7 @@ class LoginPage(tk.Frame):
         def loginFN(user,pwd):
             self.user1=user
             self.pass1=pwd
+            user_id=self.user1
         
             try:
                 find_user_query="select * from user where user_id='"+self.user1+"' and password='"+self.pass1+"'"
@@ -156,6 +179,7 @@ class LoginPage(tk.Frame):
                 user  = db.fetchone()
 
                 if user==None:
+                    Alert(0)
                     controller.show_frame(PageOne)
                     return "Invalid Credentials"
                 else:
@@ -346,9 +370,9 @@ class PageOne(tk.Frame):
                             command=lambda: controller.show_frame(ProfilePage),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
         b3.grid(row=3,column=0,padx=225,pady=25)  
         b4 = tk.Button(frame, text="Borrow Book",
-                            command=lambda: controller.show_frame(SignupPage),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
+                            command=lambda: controller.show_frame(BooksPage),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
         b4.grid(row=4,column=0,padx=225,pady=25)  
-        b1 = tk.Button(frame, text="Back to home",
+        b1 = tk.Button(frame, text="LogOut",
                             command=lambda: controller.show_frame(LoginPage),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
         b1.grid(row=5,column=0,padx=225,pady=25)  
 
@@ -439,16 +463,21 @@ class ProfilePage(tk.Frame):
         b1 = tk.Button(self, text="Back to home",
                             command=lambda: controller.show_frame(PageOne),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
         b1.pack()
-    """def Data(self):
-        # self.name=Label(self,text=user.name,font=(
-        # 'Microsoft Yehei UI Light', 11))
-        # self.name.place(x=320, y=120)
+        
+    def Data(self):
+        x=profileFn(user_id)
+        user=x.get('user_data')
+        self.name=Label(self,text=user.name,font=(
+        'Microsoft Yehei UI Light', 11))
+        self.name.place(x=320, y=120)
+        books=x.get('books_details')
         if(books.length == 0):  # using profileFn
             print("No books taken!")
         else:
             # estimate of no of books taken by a student-use for loop
             self.bookdetailsHead = Label(self, text="Date\t\tTitle\t\tAccession no.", font=(
                 'Microsoft Yehei UI Light', 11))
-            self.bookdetailsHead.place(x=200, y=170)"""
+            self.bookdetailsHead.place(x=200, y=170)
+            
 app = App()
 app.mainloop()        
