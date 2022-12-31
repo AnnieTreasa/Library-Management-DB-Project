@@ -101,7 +101,7 @@ class App(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (LoginPage, SignupPage,PageOne,BooksPage):
+        for F in (LoginPage, SignupPage,PageOne,BooksPage,ProfilePage):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -330,7 +330,9 @@ class PageOne(tk.Frame):
         # Create a label to display the image
         self.label = ttk.Label(self, image=self.image)
         self.label.pack()     
-
+        self.title = Label(self, text="DASHBOARD", font=(
+            'Microsoft Yehei UI Light', 16, 'bold'),bg='pink')
+        self.title.place(x=450, y=60)
         frame=Frame(self,bg='white')
         frame.place(x=200,y=100) 
         b1 = tk.Button(frame, text="Add User",
@@ -341,7 +343,7 @@ class PageOne(tk.Frame):
                             command=lambda: controller.show_frame(BooksPage),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
         b2.grid(row=2,column=0,padx=225,pady=25)  
         b3 = tk.Button(frame, text="Profile",
-                            command=lambda: controller.show_frame(SignupPage),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
+                            command=lambda: controller.show_frame(ProfilePage),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
         b3.grid(row=3,column=0,padx=225,pady=25)  
         b4 = tk.Button(frame, text="Borrow Book",
                             command=lambda: controller.show_frame(SignupPage),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
@@ -414,7 +416,39 @@ class BooksPage(tk.Frame):
         button = tk.Button(self, text="Add Book", command=button_click)
         button.pack()
  
+class ProfilePage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+    
+        self.backGroundImage = PhotoImage(file="bg3.png")
+        self.backGroundImageLabel = Label(self, image=self.backGroundImage)
+        self.backGroundImageLabel.place(x=0, y=0)
 
+        self.title = Label(self, text="PROFILE", font=(
+            'Microsoft Yehei UI Light', 16, 'bold'))
+        self.title.place(x=300, y=60)
 
+        self.nameLabel = Label(self, text="Name", font=(
+            'Microsoft Yehei UI Light', 11))
+        self.nameLabel.place(x=200, y=120)
+
+        self.bookdetailsHead = Label(self, text="Date\t\tTitle\t\tAccession no.", font=(
+            'Microsoft Yehei UI Light', 11))
+        self.bookdetailsHead.place(x=200, y=170)
+        b1 = tk.Button(self, text="Back to home",
+                            command=lambda: controller.show_frame(PageOne),bg='deeppink',fg='white',font=('Open Sans',16,'bold'))
+        b1.pack()
+    """def Data(self):
+        # self.name=Label(self,text=user.name,font=(
+        # 'Microsoft Yehei UI Light', 11))
+        # self.name.place(x=320, y=120)
+        if(books.length == 0):  # using profileFn
+            print("No books taken!")
+        else:
+            # estimate of no of books taken by a student-use for loop
+            self.bookdetailsHead = Label(self, text="Date\t\tTitle\t\tAccession no.", font=(
+                'Microsoft Yehei UI Light', 11))
+            self.bookdetailsHead.place(x=200, y=170)"""
 app = App()
 app.mainloop()        
